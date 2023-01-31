@@ -31,6 +31,13 @@ export class QueryService {
         return blog;
     }
 
+    public async findUser(id: RefType): Promise<IUser | undefined> {
+        const user = await this.userRepository.findUserById(id)
+        if (!user) throw new Error();
+
+        return user;
+    }
+
     public async getTotalCountForBlogs(searchNameTerm: string | undefined | object): Promise<number> {
         if (searchNameTerm)
             searchNameTerm = {name: {$regex: new RegExp(`.*${searchNameTerm}.*`, 'i')}};

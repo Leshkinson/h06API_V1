@@ -43,10 +43,10 @@ export class UserService {
         await this.userRepository.deleteAll();
     }
 
-    public async verifyUser(loginOrEmail: string, password: string): Promise<boolean> {
+    public async verifyUser(loginOrEmail: string, password: string): Promise<IUser> {
         const consideredUser = await this.userRepository.findUser(loginOrEmail);
         if(!consideredUser) throw new Error();
-        if(await bcrypt.compare(password, consideredUser.password)) return true;
+        if(await bcrypt.compare(password, consideredUser.password)) return consideredUser;
 
         throw new Error();
     }

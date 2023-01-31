@@ -4,6 +4,9 @@ import {IUser} from "../ts/interfaces";
 import {UsersRequest} from "../ts/types";
 import {UserService} from "../services/user-service";
 import {QueryService} from "../services/query-service";
+import jwt from "jsonwebtoken"
+import {TokenService} from "../application/token-service";
+import {TokenMapper} from "../dto/mappers/token-mapper";
 
 export class UserController {
     static async getAllUsers(req: Request, res: Response) {
@@ -65,11 +68,18 @@ export class UserController {
     static async login(req: Request, res: Response) {
         try {
             const userService = new UserService();
+            const tokenService = new TokenService();
 
             const {loginOrEmail, password} = req.body;
-            const check = await userService.verifyUser(loginOrEmail, password);
+            const user = await userService.verifyUser(loginOrEmail, password);
 
-            if (check) res.sendStatus(204);
+            if (user) {
+                const token = tokenService.generateToken(TokenMapper.prepareModel(user))
+
+                res.status(200).json({
+                    "accessToken": token
+                })
+            }
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(401);

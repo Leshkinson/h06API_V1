@@ -21,18 +21,25 @@ router.delete('/blogs/:id', basicAuthorization, BlogController.deleteBlog);
 router.get('/blogs/:blogId/posts', BlogController.getAllPostsForTheBlog);
 router.post('/blogs/:blogId/posts', basicAuthorization, postValidationWithoutBodyId, isErrorMiddleware, BlogController.createPostTheBlog);
 
-
 /**Posts**/
 router.get('/posts', PostController.getAllPosts);
 router.post('/posts', basicAuthorization, postValidation, isErrorMiddleware, PostController.createPost);
 router.get('/posts/:id', PostController.getOnePost);
 router.put('/posts/:id', basicAuthorization, postValidation, isErrorMiddleware, PostController.updatePost);
 router.delete('/posts/:id', basicAuthorization, PostController.deletePost);
+router.get('/posts/:postId/comments', );
+router.post('//posts/:postId/comments', );
 
 /**Users**/
 router.get('/users', basicAuthorization, UserController.getAllUsers);
 router.post('/users', basicAuthorization, userValidation, isErrorMiddleware,UserController.createUser);
 router.delete('/users/:id', basicAuthorization, UserController.deleteUser);
 
+/**Comments**/
+router.put('/comments/:commentId', );
+router.delete('/comments/:commentId', );
+router.get('/comments/:id', );
+
 /**Auth**/
 router.post('/auth/login', UserController.login);
+router.post('/auth/me', );

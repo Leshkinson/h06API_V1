@@ -25,6 +25,10 @@ export class UsersRepository {
         return this.userModel.findOne({$or: [{"login": loginOrEmail}, {"email": loginOrEmail}]})
     }
 
+    public async findUserById(id: RefType): Promise<IUser | null> {
+        return this.userModel.findById({_id: id})
+    }
+
     public async getUsersCount(searchLoginTerm: { login: { $regex: RegExp } } | {} = {}, searchEmailTerm: { email: { $regex: RegExp } } | {} = {}): Promise<number> {
         return this.userModel.countDocuments({$or: [searchLoginTerm, searchEmailTerm]});
     }
