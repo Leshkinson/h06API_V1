@@ -6,6 +6,7 @@ import {BlogsRepository} from "../repositories/blogs-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {UsersRepository} from "../repositories/users-repository";
 import {UserModel} from "../models/user-model";
+import {JwtPayload} from "jsonwebtoken";
 
 export class QueryService {
     private blogRepository: BlogsRepository;
@@ -31,7 +32,7 @@ export class QueryService {
         return blog;
     }
 
-    public async findUser(id: RefType): Promise<IUser | undefined> {
+    public async findUser(id: string | JwtPayload): Promise<IUser | undefined> {
         const user = await this.userRepository.findUserById(id)
         if (!user) throw new Error();
 

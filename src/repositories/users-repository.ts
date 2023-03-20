@@ -1,6 +1,7 @@
 import {IUser} from "../ts/interfaces";
 import {UserModel} from "../models/user-model";
 import {Model, RefType, SortOrder} from "mongoose";
+import {JwtPayload} from "jsonwebtoken";
 
 export class UsersRepository {
     private userModel: Model<IUser>;
@@ -25,7 +26,7 @@ export class UsersRepository {
         return this.userModel.findOne({$or: [{"login": loginOrEmail}, {"email": loginOrEmail}]})
     }
 
-    public async findUserById(id: RefType): Promise<IUser | null> {
+    public async findUserById(id: string | JwtPayload): Promise<IUser | null> {
         return this.userModel.findById({_id: id})
     }
 

@@ -6,6 +6,7 @@ import {TestController} from "../controllers/testing-controller";
 import {basicAuthorization} from "../authorizations/authorization";
 import {blogValidation, postValidation, postValidationWithoutBodyId, userValidation} from "../validator/validator";
 import {UserController} from "../controllers/user-controller";
+import {CommentController} from "../controllers/comment-controller";
 
 export const router = Router();
 
@@ -38,7 +39,7 @@ router.delete('/users/:id', basicAuthorization, UserController.deleteUser);
 /**Comments**/
 router.put('/comments/:commentId', );
 router.delete('/comments/:commentId', );
-router.get('/comments/:id', );
+router.get('/comments/:id', CommentController.getOneComment);
 
 /**Auth**/
 router.post('/auth/login', UserController.login);
