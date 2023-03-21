@@ -103,10 +103,11 @@ export class PostController {
             const {content} = req.body;
             const token = req.headers.authorization?.split(' ')[1]
             if (token) {
+                console.log('here')
                 const newComment: IComment | undefined = await queryService.createCommentForThePost(postId, content, token)
+                console.log({newComment})
                 if (newComment) res.status(201).json(newComment)
             }
-
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(404);

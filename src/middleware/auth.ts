@@ -1,6 +1,6 @@
 import {Request, Response, NextFunction} from "express";
 import {QueryService} from "../services/query-service";
-import {TokenService} from "../application/token-service";
+import {JWT, TokenService} from "../application/token-service";
 import {JwtPayload} from "jsonwebtoken";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,14 +13,14 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     const token = req.headers.authorization.split(' ')[1]
     const tokenService = new TokenService()
     const queryService = new QueryService()
-    const userId: string | JwtPayload = await tokenService.getUserIdByToken(token)
-
-    if (!userId) {
+    const payload: string | JwtPayload = await tokenService.getUserIdByToken(token) as JWT
+    console.log('UserId', payload)
+    if (!payload) {
         res.sendStatus(401)
 
         return;
     }
-    const user = await queryService.findUser(userId)
+    const user = await queryService.findUser(payload.id)
 
     if (!user) {
         res.sendStatus(401)

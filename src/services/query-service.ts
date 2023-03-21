@@ -114,9 +114,18 @@ export class QueryService {
 
         if (post) {
             const payload = await tokenService.getUserIdByToken(token) as JWT
+            console.log('payload query-service', payload)
             const user = await queryService.findUser(payload.id)
+            console.log('User', user)
             if (user) {
-                return await commentRepository.createComment(content, postId, payload.id, user.login)
+                console.log('Here2')
+                console.log({content});
+                console.log({postId});
+                console.log('payload.id', payload.id);
+                console.log('login', user.login);
+                const comm = await commentRepository.createComment(content, postId, payload.id, user.login)
+                console.log('Comment', comm)
+                return comm
             }
         }
 

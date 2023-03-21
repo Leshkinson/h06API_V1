@@ -10,7 +10,7 @@ export class CommentsRepository {
     }
 
     public async createComment(content: string, postId: RefType, userId: string, userLogin: string): Promise<IComment> {
-        return this.commentModel.create({content, postId, userId, userLogin})
+        return this.commentModel.create({content, postId, commentatorInfo:{userId, userLogin}})
     }
 
     public async updateComment(id: RefType, content: string): Promise<IComment| null> {
