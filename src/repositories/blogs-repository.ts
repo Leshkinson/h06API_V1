@@ -24,7 +24,7 @@ export class BlogsRepository {
     }
 
     public async createBlog(name: string, description: string, websiteUrl: string): Promise<IBlog> {
-        return await this.blogModel.create({name, description, websiteUrl, isMembership: true});
+        return await this.blogModel.create({name, description, websiteUrl, isMembership: false});
     }
 
     public async getOneBlog(id: RefType): Promise<IBlog | null> {
