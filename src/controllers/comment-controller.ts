@@ -12,7 +12,7 @@ export class CommentController {
             const commentService = new CommentService();
             const tokenService = new TokenService();
             const queryService = new QueryService();
-            const {commentId} = req.params;
+            const {id} = req.params;
             const {content} = req.body;
             const token = req.headers.authorization?.split(' ')[1]
             if (token) {
@@ -21,10 +21,10 @@ export class CommentController {
                 const user = await queryService.findUser(payload.id);
 
                 if(!user) res.sendStatus(404)
-                const comment: IComment | undefined = await commentService.getOne(commentId)
+                const comment: IComment | undefined = await commentService.getOne(id)
                 if(!comment) res.sendStatus(404)
                 if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403)
-                const updatedComment: IComment | undefined = await commentService.update(commentId, content)
+                const updatedComment: IComment | undefined = await commentService.update(id, content)
 
                 if (updatedComment) res.sendStatus(204);
             }
@@ -41,7 +41,7 @@ export class CommentController {
             const commentService = new CommentService()
             const tokenService = new TokenService();
             const queryService = new QueryService();
-            const {commentId} = req.params;
+            const {id} = req.params;
             const token = req.headers.authorization?.split(' ')[1]
             if (token) {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
@@ -52,7 +52,7 @@ export class CommentController {
                     return
                 }
 
-                const comment: IComment | undefined = await commentService.getOne(commentId);
+                const comment: IComment | undefined = await commentService.getOne(id);
 
                 if(!comment){
                     res.sendStatus(404)
@@ -65,7 +65,7 @@ export class CommentController {
                     return
                 }
 
-                await commentService.delete(commentId);
+                await commentService.delete(id);
 
                 res.sendStatus(204);
             }
