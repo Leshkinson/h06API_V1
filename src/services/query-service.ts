@@ -32,7 +32,7 @@ export class QueryService {
 
     public async findBlog(blogId: RefType): Promise<IBlog | undefined | null> {
         const blog = await this.blogRepository.getOneBlog(blogId);
-        if (!blog) throw new Error();
+        // if (!blog) throw new Error();
 
         return blog;
     }
@@ -41,7 +41,7 @@ export class QueryService {
 
         const post = await this.postRepository.getOnePost(postId);
 
-        if (!post) throw new Error();
+        // if (!post) throw new Error();
 
         return post
     }
