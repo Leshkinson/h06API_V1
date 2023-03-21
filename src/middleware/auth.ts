@@ -10,6 +10,12 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         return;
     }
 
+    if (req.headers.authorization.split(' ')[0] !== 'Bearer') {
+        res.sendStatus(401)
+
+        return;
+    }
+
     const token = req.headers.authorization.split(' ')[1]
     const tokenService = new TokenService()
     const queryService = new QueryService()
