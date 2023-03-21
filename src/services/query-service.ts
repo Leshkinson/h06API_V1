@@ -153,9 +153,9 @@ export class QueryService {
         throw new Error();
     }
 
-    public async getTotalCountCommentsForTheBlog(postId: RefType): Promise<number> {
+    public async getTotalCountCommentsForThePost(postId: RefType): Promise<number> {
         const post = await this.findPost(postId);
 
-        return this.commentModel.find({Id: (post?._id)?.toString()}).count();
+        return this.commentModel.find({postId: (post?._id)?.toString()}).count();
     }
 }

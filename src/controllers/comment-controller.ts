@@ -8,7 +8,6 @@ export class CommentController {
 
     static async updateComment(req: Request, res: Response) {
         try {
-            console.log('hehehehhee')
             const commentService = new CommentService();
             const tokenService = new TokenService();
             const queryService = new QueryService();
@@ -17,9 +16,9 @@ export class CommentController {
             const token = req.headers.authorization?.split(' ')[1]
             if (token) {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
-                console.log('payload.id',payload.id)
+
                 const user = await queryService.findUser(payload.id);
-                //console.log('User', user)
+
                 if(!user) res.sendStatus(404)
                 const comment: IComment | undefined = await commentService.getOne(commentId)
                 if(!comment) res.sendStatus(404)

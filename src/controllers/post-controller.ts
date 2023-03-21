@@ -127,7 +127,7 @@ export class PostController {
             pageSize = Number(pageSize ?? 10);
 
             const comments: IComment[] = await queryService.getCommentsForThePost(postId, pageNumber, pageSize, sortBy, sortDirection);
-            const totalCount: number = await queryService.getTotalCountCommentsForTheBlog(postId);
+            const totalCount: number = await queryService.getTotalCountCommentsForThePost(postId);
             console.log('totalCount', totalCount)
 
             res.status(200).json({
