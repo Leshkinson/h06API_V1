@@ -3,6 +3,7 @@ import {IComment} from "../ts/interfaces";
 import {CommentService} from "../services/comment-service";
 import {JWT, TokenService} from "../application/token-service";
 import {QueryService} from "../services/query-service";
+
 // import {CustomError} from "../middleware/catch-error";
 
 export class CommentController {
@@ -12,7 +13,7 @@ export class CommentController {
             const commentService = new CommentService();
             const tokenService = new TokenService();
             const queryService = new QueryService();
-            const {id} = req.params;
+            const {commentId} = req.params;
             const {content} = req.body;
             const token = req.headers.authorization?.split(' ')[1]
             if (token) {
@@ -20,11 +21,29 @@ export class CommentController {
 
                 const user = await queryService.findUser(payload.id);
 
-                if(!user) res.sendStatus(404)
-                const comment: IComment | undefined = await commentService.getOne(id)
-                if(!comment) res.sendStatus(404)
-                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403)
-                const updatedComment: IComment | undefined = await commentService.update(id, content)
+                if (!user) {
+                    res.sendStatus(404)
+
+                    return
+                }
+                const comment: IComment | undefined = await commentService.getOne(commentId)
+                if (!comment) {
+                    res.sendStatus(404)
+
+                    return
+                }
+                if (comment?.commentatorInfo.userLogin !== user?.login ) {
+                    console.log('Here1')
+                    res.sendStatus(403)
+                    return
+                }
+
+                if (comment?.commentatorInfo.userId !== user?._id.toString()) {
+                    console.log('Here2')
+                    res.sendStatus(403)
+                    return
+                }
+                const updatedComment: IComment | undefined = await commentService.update(commentId, content)
 
                 if (updatedComment) res.sendStatus(204);
             }
@@ -47,28 +66,32 @@ export class CommentController {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
                 const user = await queryService.findUser(payload.id);
 
-                if(!user) {
+                if (!user) {
                     res.sendStatus(404)
                     return
                 }
 
                 const comment: IComment | undefined = await commentService.getOne(id);
 
-                if(!comment){
+                if (!comment) {
                     res.sendStatus(404)
                     return
                 }
-
-                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userLogin !== user?.email) {
+                console.log('comment?.commentatorInfo.userLogin', comment?.commentatorInfo.userLogin)
+                console.log('user?.login', user?.login)
+                console.log('comment?.commentatorInfo.userLogin', comment?.commentatorInfo.userLogin)
+                console.log('user?.email', user?.email)
+                if (comment?.commentatorInfo.userLogin !== user?.login ) {
+                    console.log('Here3')
                     res.sendStatus(403)
                     return
                 }
 
-                if(comment?.commentatorInfo.userId !== user?._id.toString()) {
+                if (comment?.commentatorInfo.userId !== user?._id.toString()) {
+                    console.log('Here4')
                     res.sendStatus(403)
                     return
                 }
-
 
                 await commentService.delete(id);
 
@@ -79,7 +102,7 @@ export class CommentController {
             //     res.sendStatus(error.code);
             //     console.log('CustomError', error.code);
             // } else
-                if (error instanceof Error) {
+            if (error instanceof Error) {
                 res.sendStatus(404);
                 console.log(error.message);
             }

@@ -44,7 +44,7 @@ router.post('/users', basicAuthorization, userValidation, isErrorMiddleware, Use
 router.delete('/users/:id', basicAuthorization, UserController.deleteUser);
 
 /**Comments**/
-router.put('/comments/:id', authMiddleware, commentValidation, isErrorMiddleware, CommentController.updateComment);
+router.put('/comments/:commentId', authMiddleware, commentValidation, isErrorMiddleware, CommentController.updateComment);
 router.delete('/comments/:id', authMiddleware, CommentController.deleteComment);
 router.get('/comments/:id', CommentController.getOneComment);
 
