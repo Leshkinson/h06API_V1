@@ -4,6 +4,9 @@ const settings = {
     JWT_ACCESS_SECRET: "superpupersecret",
     TOKEN_LIVE_TIME: {expiresIn: "1h"}
 }
+export interface JWT extends JwtPayload {
+    id: string;
+}
 
 export class TokenService {
     private readonly secret: Secret;
@@ -19,7 +22,7 @@ export class TokenService {
         return jwt.sign(payload, this.secret, this.options);
     }
 
-    getUserIdByToken(token: string): string | JwtPayload {
+    getUserIdByToken(token: string): string | JwtPayload | JWT {
         return jwt.verify(token, settings.JWT_ACCESS_SECRET)
     }
 }

@@ -1,5 +1,5 @@
-import {IPost} from "../ts/interfaces";
-import {PostsRequest} from "../ts/types";
+import {IComment, IPost} from "../ts/interfaces";
+import {CommentsRequest, PostsRequest} from "../ts/types";
 import {Request, Response} from "express";
 import {PostService} from "../services/post-service";
 import {QueryService} from "../services/query-service";
@@ -87,6 +87,54 @@ export class PostController {
             await postService.delete(id);
 
             res.sendStatus(204);
+        } catch (error) {
+            if (error instanceof Error) {
+                res.sendStatus(404);
+                console.log(error.message);
+            }
+        }
+    }
+
+    static async createCommentThePost(req: Request, res: Response) {
+        try {
+            const queryService = new QueryService();
+
+            const {postId} = req.params;
+            const {content} = req.body;
+            const token = req.headers.authorization?.split(' ')[1]
+            if (token) {
+                const newComment: IComment | undefined = await queryService.createCommentForThePost(postId, content, token)
+                if (newComment) res.status(201).json(newComment)
+            }
+
+        } catch (error) {
+            if (error instanceof Error) {
+                res.sendStatus(404);
+                console.log(error.message);
+            }
+        }
+    }
+
+    static async getAllCommentsForThePost(req: Request, res: Response) {
+        try {
+            const queryService = new QueryService();
+
+            const {postId} = req.params;
+            let {pageNumber, pageSize, sortDirection, sortBy} = req.query as CommentsRequest;
+            pageNumber = Number(pageNumber ?? 1);
+            pageSize = Number(pageSize ?? 10);
+
+            const comments: IComment[] = await queryService.getCommentsForThePost(postId, pageNumber, pageSize, sortBy, sortDirection);
+            const totalCount: number = await queryService.getTotalCountPostsForTheBlog(postId);
+
+            res.status(200).json({
+                "pagesCount": Math.ceil(totalCount / pageSize),
+                "page": pageNumber,
+                "pageSize": pageSize,
+                "totalCount": totalCount,
+                "items": comments
+            })
+
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(404);

@@ -9,6 +9,16 @@ export class CommentsRepository {
         this.commentModel = CommentModel;
     }
 
+    public async createComment(content: string, postId: RefType, userId: string, userLogin: string): Promise<IComment> {
+        return this.commentModel.create({content, postId, userId, userLogin})
+    }
+
+    public async updateComment(id: RefType, content: string): Promise<IComment| null> {
+        return this.commentModel.findOneAndUpdate({_id: id}, {
+            content
+        })
+    }
+
     public async getOneComment(id: RefType): Promise<IComment | null> {
         return this.commentModel.findById({_id: id});
     }

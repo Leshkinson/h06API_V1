@@ -16,11 +16,19 @@ export class CommentService {
         return comment;
     }
 
+    public async update(id: RefType, content: string): Promise<IComment | undefined> {
+        const updateComment: IComment | undefined | null = await this.commentRepository.updateComment(id, content);
+        if (updateComment) return updateComment;
+        throw new Error();
+    }
+
     public async getOne(id: RefType): Promise<IComment | undefined> {
         const findComment: IComment | undefined = await this.find(id);
         if (findComment) return findComment;
         throw new Error();
     }
+
+
 
     public async delete(id: RefType): Promise<IComment> {
         const deleteComment = await this.commentRepository.deleteComment(id)

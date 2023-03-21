@@ -131,7 +131,15 @@ export const emailValidation = body('email')
     .custom(isEmailPattern)
     .withMessage("Login has incorrect value. (Login doesn't match pattern)");
 
+export const contentValidation = body('content')
+    .trim()
+    .isString()
+    .withMessage("Content has incorrect value. (BlogId doesn't string)")
+    .isLength({ min: 20, max: 300})
+    .withMessage("Content has incorrect value. (Content has less than 20 or more than 300 characters)")
+
 export const blogValidation = [nameValidation, descriptionValidation, websiteUrlValidation];
 export const postValidationWithoutBodyId = [titleValidation, shortDescriptionValidation, contentDescriptionValidation];
 export const postValidation = [titleValidation, shortDescriptionValidation, contentDescriptionValidation, blogIdValidation];
 export const userValidation = [loginValidation, passwordValidation, emailValidation]
+export const commentValidation = [contentValidation]

@@ -1,12 +1,15 @@
-import {IBlog, IPost, IUser} from "../ts/interfaces";
+import {IBlog, IComment, IPost, IUser} from "../ts/interfaces";
 import {BlogModel} from "../models/blog-model";
 import {PostModel} from "../models/post-model";
+import {CommentModel} from "../models/comment-model";
 import mongoose, {Model, RefType, SortOrder} from "mongoose";
 import {BlogsRepository} from "../repositories/blogs-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {UsersRepository} from "../repositories/users-repository";
 import {UserModel} from "../models/user-model";
 import {JwtPayload} from "jsonwebtoken";
+import {JWT, TokenService} from "../application/token-service";
+import {CommentsRepository} from "../repositories/comments-repository";
 
 export class QueryService {
     private blogRepository: BlogsRepository;
@@ -14,7 +17,8 @@ export class QueryService {
     private userRepository: UsersRepository;
     private postModel: Model<IPost>;
     private blogModel: Model<IBlog>;
-    private userModel: Model<IUser>
+    private userModel: Model<IUser>;
+    private commentModel: Model<IComment>
 
     constructor() {
         this.blogRepository = new BlogsRepository();
@@ -23,6 +27,7 @@ export class QueryService {
         this.postModel = PostModel;
         this.blogModel = BlogModel;
         this.userModel = UserModel;
+        this.commentModel = CommentModel;
     }
 
     public async findBlog(blogId: RefType): Promise<IBlog | undefined> {
@@ -30,6 +35,13 @@ export class QueryService {
         if (!blog) throw new Error();
 
         return blog;
+    }
+
+    public async findPost(postId: RefType): Promise<IPost | undefined> {
+        const post = await this.postRepository.getOnePost(postId);
+        if (!post) throw new Error();
+
+        return post
     }
 
     public async findUser(id: string | JwtPayload): Promise<IUser | undefined> {
@@ -92,5 +104,42 @@ export class QueryService {
             return this.postModel.find({blogId: (blog?._id)?.toString()}).sort({[sortBy]: sortDirection}).skip(skip).limit(+pageSize);
         }
         throw new Error();
+    }
+
+    public async createCommentForThePost(postId: RefType, content: string, token: string): Promise<IComment> {
+        const tokenService = new TokenService();
+        const queryService = new QueryService();
+        const commentRepository = new CommentsRepository()
+        const post = await this.findPost(postId)
+
+        if (post) {
+            const payload = await tokenService.getUserIdByToken(token) as JWT
+            const user = await queryService.findUser(payload.id)
+            if (user) {
+                return await commentRepository.createComment(content, postId, payload.id, user.login)
+            }
+        }
+
+        throw new Error();
+    }
+
+    public async getCommentsForThePost(
+        postId: RefType,
+        pageNumber: number = 1,
+        pageSize: number = 10,
+        sortBy: string = 'createdAt',
+        sortDirection: SortOrder = 'desc'): Promise<IComment[]> {
+        const post = await this.findPost(postId);
+        const skip: number = (+pageNumber - 1) * +pageSize;
+        if (post) {
+            return this.commentModel.find({postId: (post?._id)?.toString()}).sort({[sortBy]: sortDirection}).skip(skip).limit(+pageSize);
+        }
+        throw new Error();
+    }
+
+    public async getTotalCountCommentsForTheBlog(postId: RefType): Promise<number> {
+        const post = await this.findPost(postId);
+
+        return this.commentModel.find({Id: (post?._id)?.toString()}).count();
     }
 }

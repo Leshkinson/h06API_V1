@@ -1,10 +1,17 @@
 import {Router} from "express";
 import {isErrorMiddleware} from "../middleware/catch-error";
+import {authMiddleware} from "../middleware/auth";
 import {BlogController} from "../controllers/blog-controller";
 import {PostController} from "../controllers/post-controller";
 import {TestController} from "../controllers/testing-controller";
 import {basicAuthorization} from "../authorizations/authorization";
-import {blogValidation, postValidation, postValidationWithoutBodyId, userValidation} from "../validator/validator";
+import {
+    blogValidation,
+    commentValidation,
+    postValidation,
+    postValidationWithoutBodyId,
+    userValidation
+} from "../validator/validator";
 import {UserController} from "../controllers/user-controller";
 import {CommentController} from "../controllers/comment-controller";
 
@@ -28,8 +35,8 @@ router.post('/posts', basicAuthorization, postValidation, isErrorMiddleware, Pos
 router.get('/posts/:id', PostController.getOnePost);
 router.put('/posts/:id', basicAuthorization, postValidation, isErrorMiddleware, PostController.updatePost);
 router.delete('/posts/:id', basicAuthorization, PostController.deletePost);
-router.get('/posts/:postId/comments', );
-router.post('//posts/:postId/comments', );
+router.get('/posts/:postId/comments', PostController.getAllCommentsForThePost);
+router.post('//posts/:postId/comments', authMiddleware, commentValidation, isErrorMiddleware, PostController.createCommentThePost);
 
 /**Users**/
 router.get('/users', basicAuthorization, UserController.getAllUsers);
@@ -37,10 +44,10 @@ router.post('/users', basicAuthorization, userValidation, isErrorMiddleware,User
 router.delete('/users/:id', basicAuthorization, UserController.deleteUser);
 
 /**Comments**/
-router.put('/comments/:commentId', );
-router.delete('/comments/:commentId', );
+router.put('/comments/:commentId', authMiddleware, CommentController.updateComment);
+router.delete('/comments/:commentId', authMiddleware, CommentController.deleteComment);
 router.get('/comments/:id', CommentController.getOneComment);
 
 /**Auth**/
-router.post('/auth/login', UserController.login);
-router.get('/auth/me', UserController.me);
+router.post('/auth/login', userValidation, isErrorMiddleware, UserController.login);
+router.get('/auth/me', authMiddleware, isErrorMiddleware, UserController.me);

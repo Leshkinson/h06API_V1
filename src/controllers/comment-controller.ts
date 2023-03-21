@@ -1,11 +1,29 @@
 import {Request, Response} from "express";
 import {IComment} from "../ts/interfaces";
 import {CommentService} from "../services/comment-service";
+import {JWT, TokenService} from "../application/token-service";
+import {QueryService} from "../services/query-service";
 
 export class CommentController {
     static async updateComment(req: Request, res: Response) {
         try {
+            const commentService = new CommentService();
+            const tokenService = new TokenService();
+            const queryService = new QueryService();
+            const {commentId} = req.params;
+            const {content} = req.body;
+            const token = req.headers.authorization?.split(' ')[1]
+            if (token) {
+                const payload = await tokenService.getUserIdByToken(token) as JWT
+                const user = await queryService.findUser(payload.id);
+                if(!user) res.sendStatus(404)
+                const comment: IComment | undefined = await commentService.getOne(commentId)
+                if(!comment) res.sendStatus(404)
+                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userLogin !== user?.email || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403)
+                const updatedComment: IComment | undefined = await commentService.update(commentId, content)
 
+                if (updatedComment) res.sendStatus(204);
+            }
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(404);
@@ -17,11 +35,21 @@ export class CommentController {
     static async deleteComment(req: Request, res: Response) {
         try {
             const commentService = new CommentService()
+            const tokenService = new TokenService();
+            const queryService = new QueryService();
+            const {commentId} = req.params;
+            const token = req.headers.authorization?.split(' ')[1]
+            if (token) {
+                const payload = await tokenService.getUserIdByToken(token) as JWT
+                const user = await queryService.findUser(payload.id);
+                if(!user) res.sendStatus(404);
+                const comment: IComment | undefined = await commentService.getOne(commentId);
+                if(!comment) res.sendStatus(404);
+                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userLogin !== user?.email || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403);
+                await commentService.delete(commentId);
 
-            const {id} = req.params;
-            await commentService.delete(id)
-
-            res.sendStatus(204);
+                res.sendStatus(204);
+            }
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(404);

@@ -5,7 +5,7 @@ import {UsersRequest} from "../ts/types";
 import {UserService} from "../services/user-service";
 import {QueryService} from "../services/query-service";
 //import jwt from "jsonwebtoken"
-import {TokenService} from "../application/token-service";
+import {JWT, TokenService} from "../application/token-service";
 import {TokenMapper} from "../dto/mappers/token-mapper";
 
 export class UserController {
@@ -95,7 +95,7 @@ export class UserController {
             const token: string | undefined = req.headers.authorization?.split(' ')[1];
             console.log('Token', token)
             if (token) {
-                const payload = await tokenService.getUserIdByToken(token)
+                const payload = await tokenService.getUserIdByToken(token) as JWT
                 console.log('userId', payload)
                 const user = await queryService.findUser(payload.id)
                 res.status(200).json({

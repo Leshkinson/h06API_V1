@@ -15,6 +15,13 @@ export type BlogsRequestWithoutSNT = {
     sortDirection?: SortOrder
 }
 
+export type CommentsRequest = {
+    pageNumber?: number | undefined,
+    pageSize?: number | undefined,
+    sortBy?: string | undefined,
+    sortDirection?: SortOrder
+}
+
 export type BlogsRequest = {
     pageNumber?: number | undefined,
     pageSize?: number | undefined,

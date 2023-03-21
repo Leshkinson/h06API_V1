@@ -6,6 +6,7 @@ export const BlogSchema = new Schema({
     name: {type: "string", required: true},
     description: {type: "string", required: true},
     websiteUrl: {type: "string", required: true},
+    isMembership: {type: "boolean", required: true}
 }, {timestamps: true})
 
 BlogSchema.set('toJSON', {
