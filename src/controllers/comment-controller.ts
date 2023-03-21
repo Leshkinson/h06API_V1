@@ -59,7 +59,7 @@ export class CommentController {
                     return
                 }
 
-                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id.toString()) {
+                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userLogin !== user?.email && comment?.commentatorInfo.userId !== user?._id.toString()) {
                     res.sendStatus(403)
                     return
                 }
