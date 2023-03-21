@@ -1,5 +1,4 @@
 import jwt, {JwtPayload, Secret, SignOptions} from "jsonwebtoken";
-import {RefType} from "mongoose";
 
 const settings = {
     JWT_ACCESS_SECRET: "superpupersecret",
@@ -21,7 +20,6 @@ export class TokenService {
     }
 
     getUserIdByToken(token: string): string | JwtPayload {
-        const result = jwt.verify(token, settings.JWT_ACCESS_SECRET)
-        return result
+        return jwt.verify(token, settings.JWT_ACCESS_SECRET)
     }
 }

@@ -43,4 +43,4 @@ router.get('/comments/:id', CommentController.getOneComment);
 
 /**Auth**/
 router.post('/auth/login', UserController.login);
-router.post('/auth/me', );
+router.get('/auth/me', UserController.me);
