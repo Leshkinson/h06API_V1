@@ -49,5 +49,5 @@ router.delete('/comments/:commentId', authMiddleware, CommentController.deleteCo
 router.get('/comments/:id', CommentController.getOneComment);
 
 /**Auth**/
-router.post('/auth/login', authMiddleware, UserController.login);
+router.post('/auth/login', UserController.login);
 router.get('/auth/me', authMiddleware, isErrorMiddleware, UserController.me);
