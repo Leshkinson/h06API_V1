@@ -11,8 +11,8 @@ export const isErrorMiddleware = (req: Request, res: Response, next: NextFunctio
     next()
 };
 
-export class CustomError extends Error {
-    constructor(public code: number) {
-        super();
-    }
-}
+// export class CustomError extends Error {
+//     constructor(public code: number) {
+//         super();
+//     }
+// }

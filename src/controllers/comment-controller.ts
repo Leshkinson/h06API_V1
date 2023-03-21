@@ -3,7 +3,7 @@ import {IComment} from "../ts/interfaces";
 import {CommentService} from "../services/comment-service";
 import {JWT, TokenService} from "../application/token-service";
 import {QueryService} from "../services/query-service";
-import {CustomError} from "../middleware/catch-error";
+// import {CustomError} from "../middleware/catch-error";
 
 export class CommentController {
 
@@ -47,26 +47,34 @@ export class CommentController {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
                 const user = await queryService.findUser(payload.id);
 
-                if(!user)
-                    throw new CustomError(404);
+                if(!user) {
+                    res.sendStatus(404)
+                    return
+                }
 
                 const comment: IComment | undefined = await commentService.getOne(commentId);
 
-                if(!comment)
-                    throw new CustomError(404);
+                if(!comment){
+                    res.sendStatus(404)
+                    return
+                }
 
-                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id.toString())
-                    throw new CustomError(403);
+
+                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id.toString()) {
+                    res.sendStatus(403)
+                    return
+                }
 
                 await commentService.delete(commentId);
 
                 res.sendStatus(204);
             }
         } catch (error) {
-            if (error instanceof CustomError){
-                res.sendStatus(error.code);
-                console.log('CustomError', error.code);
-            } else if (error instanceof Error) {
+            // if (error instanceof CustomError){
+            //     res.sendStatus(error.code);
+            //     console.log('CustomError', error.code);
+            // } else
+                if (error instanceof Error) {
                 res.sendStatus(404);
                 console.log(error.message);
             }
