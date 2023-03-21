@@ -28,11 +28,13 @@ export class CommentService {
         throw new Error();
     }
 
-
-
     public async delete(id: RefType): Promise<IComment> {
         const deleteComment = await this.commentRepository.deleteComment(id)
         if (deleteComment) return deleteComment
         throw new Error();
+    }
+
+    public async testingDelete(): Promise<void> {
+        await this.commentRepository.deleteAll();
     }
 }

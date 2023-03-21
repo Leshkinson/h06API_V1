@@ -26,4 +26,8 @@ export class CommentsRepository {
     public async deleteComment(id: RefType) {
         return this.commentModel.findOneAndDelete({_id: id});
     }
+
+    public async deleteAll() {
+        return this.commentModel.deleteMany();
+    }
 }
