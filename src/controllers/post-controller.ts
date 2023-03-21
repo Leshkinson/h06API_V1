@@ -118,6 +118,7 @@ export class PostController {
 
     static async getAllCommentsForThePost(req: Request, res: Response) {
         try {
+            console.log('here')
             const queryService = new QueryService();
 
             const {postId} = req.params;
@@ -126,7 +127,8 @@ export class PostController {
             pageSize = Number(pageSize ?? 10);
 
             const comments: IComment[] = await queryService.getCommentsForThePost(postId, pageNumber, pageSize, sortBy, sortDirection);
-            const totalCount: number = await queryService.getTotalCountPostsForTheBlog(postId);
+            const totalCount: number = await queryService.getTotalCountCommentsForTheBlog(postId);
+            console.log('totalCount', totalCount)
 
             res.status(200).json({
                 "pagesCount": Math.ceil(totalCount / pageSize),

@@ -2,7 +2,7 @@ import jwt, {JwtPayload, Secret, SignOptions} from "jsonwebtoken";
 
 const settings = {
     JWT_ACCESS_SECRET: "superpupersecret",
-    TOKEN_LIVE_TIME: {expiresIn: "1h"}
+    TOKEN_LIVE_TIME: {expiresIn: "14h"}
 }
 export interface JWT extends JwtPayload {
     id: string;

@@ -11,6 +11,7 @@ export class CommentService {
 
     public async find(id: RefType): Promise<IComment | undefined> {
         const comment = await this.commentRepository.getOneComment(id);
+        console.log('Comment find', comment)
         if (!comment) throw new Error();
 
         return comment;
@@ -23,7 +24,9 @@ export class CommentService {
     }
 
     public async getOne(id: RefType): Promise<IComment | undefined> {
+        console.log('HERE service')
         const findComment: IComment | undefined = await this.find(id);
+        console.log({findComment})
         if (findComment) return findComment;
         throw new Error();
     }

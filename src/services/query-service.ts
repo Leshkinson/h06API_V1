@@ -38,7 +38,9 @@ export class QueryService {
     }
 
     public async findPost(postId: RefType): Promise<IPost | undefined> {
+        console.log(postId)
         const post = await this.postRepository.getOnePost(postId);
+        console.log('POST', post)
         if (!post) throw new Error();
 
         return post
@@ -138,10 +140,14 @@ export class QueryService {
         pageSize: number = 10,
         sortBy: string = 'createdAt',
         sortDirection: SortOrder = 'desc'): Promise<IComment[]> {
+        console.log('here2')
         const post = await this.findPost(postId);
+        console.log('Post', post)
         const skip: number = (+pageNumber - 1) * +pageSize;
         if (post) {
-            return this.commentModel.find({postId: (post?._id)?.toString()}).sort({[sortBy]: sortDirection}).skip(skip).limit(+pageSize);
+            const comments = await this.commentModel.find({postId: (post?._id)?.toString()}).sort({[sortBy]: sortDirection}).skip(skip).limit(+pageSize);
+            console.log('query-service comments', comments)
+            return comments
         }
         throw new Error();
     }

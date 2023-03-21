@@ -42,10 +42,20 @@ export class CommentController {
             if (token) {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
                 const user = await queryService.findUser(payload.id);
+                console.log('user', user)
                 if(!user) res.sendStatus(404);
+                console.log('here1')
+                console.log('commentId', commentId)
                 const comment: IComment | undefined = await commentService.getOne(commentId);
-                if(!comment) res.sendStatus(404);
-                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userLogin !== user?.email || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403);
+                console.log('COMMENT', comment);
+                if(!comment) return res.sendStatus(404);
+                console.log('here2')
+                console.log('comment?.commentatorInfo.userLogin', comment?.commentatorInfo.userLogin)
+                console.log('user?.login', user?.login)
+                console.log('comment?.commentatorInfo.userId', comment?.commentatorInfo.userId)
+                console.log('user?._id.toString()', user?._id.toString())
+                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id.toString()) return res.sendStatus(403);
+                console.log('here3')
                 await commentService.delete(commentId);
 
                 res.sendStatus(204);
