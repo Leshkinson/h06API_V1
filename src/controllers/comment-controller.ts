@@ -5,8 +5,10 @@ import {JWT, TokenService} from "../application/token-service";
 import {QueryService} from "../services/query-service";
 
 export class CommentController {
+
     static async updateComment(req: Request, res: Response) {
         try {
+            console.log('hehehehhee')
             const commentService = new CommentService();
             const tokenService = new TokenService();
             const queryService = new QueryService();
@@ -15,11 +17,13 @@ export class CommentController {
             const token = req.headers.authorization?.split(' ')[1]
             if (token) {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
+                console.log('payload.id',payload.id)
                 const user = await queryService.findUser(payload.id);
+                //console.log('User', user)
                 if(!user) res.sendStatus(404)
                 const comment: IComment | undefined = await commentService.getOne(commentId)
                 if(!comment) res.sendStatus(404)
-                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userLogin !== user?.email || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403)
+                if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id) res.sendStatus(403)
                 const updatedComment: IComment | undefined = await commentService.update(commentId, content)
 
                 if (updatedComment) res.sendStatus(204);
@@ -42,20 +46,15 @@ export class CommentController {
             if (token) {
                 const payload = await tokenService.getUserIdByToken(token) as JWT
                 const user = await queryService.findUser(payload.id);
-                console.log('user', user)
+
                 if(!user) res.sendStatus(404);
-                console.log('here1')
-                console.log('commentId', commentId)
+
                 const comment: IComment | undefined = await commentService.getOne(commentId);
-                console.log('COMMENT', comment);
+
                 if(!comment) return res.sendStatus(404);
-                console.log('here2')
-                console.log('comment?.commentatorInfo.userLogin', comment?.commentatorInfo.userLogin)
-                console.log('user?.login', user?.login)
-                console.log('comment?.commentatorInfo.userId', comment?.commentatorInfo.userId)
-                console.log('user?._id.toString()', user?._id.toString())
+
                 if(comment?.commentatorInfo.userLogin !== user?.login || comment?.commentatorInfo.userId !== user?._id.toString()) return res.sendStatus(403);
-                console.log('here3')
+
                 await commentService.delete(commentId);
 
                 res.sendStatus(204);

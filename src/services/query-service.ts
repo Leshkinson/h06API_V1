@@ -30,25 +30,26 @@ export class QueryService {
         this.commentModel = CommentModel;
     }
 
-    public async findBlog(blogId: RefType): Promise<IBlog | undefined> {
+    public async findBlog(blogId: RefType): Promise<IBlog | undefined | null> {
         const blog = await this.blogRepository.getOneBlog(blogId);
         if (!blog) throw new Error();
 
         return blog;
     }
 
-    public async findPost(postId: RefType): Promise<IPost | undefined> {
-        console.log(postId)
+    public async findPost(postId: RefType): Promise<IPost | undefined | null> {
+
         const post = await this.postRepository.getOnePost(postId);
-        console.log('POST', post)
+
         if (!post) throw new Error();
 
         return post
     }
 
-    public async findUser(id: string | JwtPayload): Promise<IUser | undefined> {
+    public async findUser(id: string | JwtPayload): Promise<IUser | undefined | null> {
         const user = await this.userRepository.findUserById(id)
-        if (!user) throw new Error();
+        console.log('User', user)
+        // if (!user) throw new Error();
 
         return user;
     }
