@@ -40,7 +40,7 @@ router.post('//posts/:postId/comments', authMiddleware, commentValidation, isErr
 
 /**Users**/
 router.get('/users', basicAuthorization, UserController.getAllUsers);
-router.post('/users', basicAuthorization, userValidation, isErrorMiddleware,UserController.createUser);
+router.post('/users', basicAuthorization, userValidation, isErrorMiddleware, UserController.createUser);
 router.delete('/users/:id', basicAuthorization, UserController.deleteUser);
 
 /**Comments**/
@@ -49,5 +49,5 @@ router.delete('/comments/:commentId', authMiddleware, CommentController.deleteCo
 router.get('/comments/:id', CommentController.getOneComment);
 
 /**Auth**/
-router.post('/auth/login', userValidation, isErrorMiddleware, UserController.login);
+router.post('/auth/login', UserController.login);
 router.get('/auth/me', authMiddleware, isErrorMiddleware, UserController.me);
